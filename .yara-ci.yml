@@ -1,0 +1,8 @@
+files:
+    accept:
+        - "**.yara"
+variables:
+    filename: ""
+    filepath: ""
+    extension: ""
+    filetype: ""
