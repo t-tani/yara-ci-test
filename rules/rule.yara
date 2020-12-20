@@ -1,3 +1,4 @@
+
 /*
     YARA Rule Set for MalConfScan
     Author: JPCERT/CC Incident Response Group
@@ -170,8 +171,10 @@ rule Emotet {
             $v5a = { 69 01 6D 4E C6 41 05 39 30 00 00 }
             $v5b = { 6D 4E C6 41 33 D2 81 C1 39 30 00 00 }
             $v6a = { C7 40 20 ?? ?? ?? 00 C7 40 10 ?? ?? ?? 00 C7 40 0C 00 00 00 00 83 3C CD ?? ?? ?? ?? 00 74 0E 41 89 48 ?? 83 3C CD ?? ?? ?? ?? 00 75 F2 }
+            $v7a = { 6A 06 33 D2 ?? F7 ?? 8B DA 43 74 }
+            $v7b = { 83 E6 0F 8B CF 83 C6 04 50 8B D6 E8 ?? ?? ?? ?? 59 6A 2F 8D 3C 77 58 66 89 07 83 C7 02 4B 75 }
 
-          condition: all of ($v4*) or $v5a or $v5b or $v6a
+          condition: all of ($v4*) or $v5a or $v5b or $v6a or all of ($v7*)
 }
 
 rule SmokeLoader {
@@ -200,10 +203,11 @@ rule Datper {
             $a1 = { E8 03 00 00 }
             $b1 = "|||"
             $c1 = "Content-Type: application/x-www-form-urlencoded"
+            $delphi = "Borland\\Delphi" ascii wide
             $push7530h64 = { C7 C1 30 75 00 00 }
             $push7530h = { 68 30 75 00 00 }
 
-          condition: $a1 and $b1 and $c1 and ($push7530h64 or $push7530h)
+          condition: $a1 and $b1 and $c1 and $delphi and ($push7530h64 or $push7530h)
 }
 
 rule PlugX {
@@ -498,7 +502,7 @@ rule Quasar {
             hash1 = "390c1530ff62d8f4eddff0ac13bc264cbf4183e7e3d6accf8f721ffc5250e724"
 
           strings:
-            $quasarstr1 = "Client.exe" wide 
+            $quasarstr1 = "Client.exe" wide
             $quasarstr2 = "({0}:{1}:{2})" wide
             $sql1 = "SELECT * FROM Win32_DisplayConfiguration" wide
             $sql2 = "{0}d : {1}h : {2}m : {3}s" wide
@@ -526,20 +530,20 @@ rule Elf_plead {
           condition: 3 of them
 }
 
-rule asyncrat { 
+rule asyncrat {
     meta:
         description = "detect AsyncRat in memory"
         author = "JPCERT/CC Incident Response Group"
         rule_usage = "memory scan"
         reference = "internal research"
-        hash1 = "1167207bfa1fed44e120dc2c298bd25b7137563fdc9853e8403027b645e52c19" 
+        hash1 = "1167207bfa1fed44e120dc2c298bd25b7137563fdc9853e8403027b645e52c19"
         hash2 = "588c77a3907163c3c6de0e59f4805df41001098a428c226f102ed3b74b14b3cc"
 
-    strings: 
+    strings:
         $salt = {BF EB 1E 56 FB CD 97 3B B2 19 02 24 30 A5 78 43 00 3D 56 44 D2 1E 62 B9 D4 F1 80 E7 E6 C3 39 41}
         $b1 = {00 00 00 0D 53 00 48 00 41 00 32 00 35 00 36 00 00}
         $b2 = {09 50 00 6F 00 6E 00 67 00 00}
-        $s1 = "pastebin" ascii wide nocase 
+        $s1 = "pastebin" ascii wide nocase
         $s2 = "pong" wide
         $s3 = "Stub.exe" ascii wide
     condition:  ($salt and (2 of ($s*) or 1 of ($b*))) or (all of ($b*) and 2 of ($s*))
@@ -551,7 +555,7 @@ rule Wellmess {
             author = "JPCERT/CC Incident Response Group"
             rule_usage = "memory scan"
             reference = "internal research"
-            hash1 = "0322c4c2d511f73ab55bf3f43b1b0f152188d7146cc67ff497ad275d9dd1c20f" 
+            hash1 = "0322c4c2d511f73ab55bf3f43b1b0f152188d7146cc67ff497ad275d9dd1c20f"
             hash2 = "8749c1495af4fd73ccfc84b32f56f5e78549d81feefb0c1d1c3475a74345f6a8 "
 
           strings:
